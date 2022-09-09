@@ -22,8 +22,8 @@ return factory.createLevelApi{
     botCount = 1,
     color = true,
     mazeGenerationParams = {
-        height = 30,
-        width = 30,
+        height = 31,
+        width = 31,
         maxRooms = 5,
         roomMinSize = 3,
         roomMaxSize = 5,

@@ -20,8 +20,8 @@ local factory = require 'factories.explore.obstructed_goals_factory'
 return factory.createLevelApi{
     doorsClosed = 0.75,
     episodeLengthSeconds = 120,
-    mazeHeight = 33,
-    mazeWidth = 33,
+    mazeHeight = 35,
+    mazeWidth = 35,
     objectCount = 20,
     roomCount = 11,
     roomMaxSize = 3,

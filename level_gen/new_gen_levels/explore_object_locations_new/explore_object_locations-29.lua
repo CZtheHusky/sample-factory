@@ -19,8 +19,8 @@ local factory = require 'factories.explore.object_locations_factory'
 
 return factory.createLevelApi{
     episodeLengthSeconds = 120,
-    mazeHeight = 33,
-    mazeWidth = 33,
+    mazeHeight = 35,
+    mazeWidth = 35,
     roomCount = 11,
     roomMaxSize = 15,
 }
