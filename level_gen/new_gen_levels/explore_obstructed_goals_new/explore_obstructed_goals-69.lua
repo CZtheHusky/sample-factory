@@ -24,6 +24,6 @@ return factory.createLevelApi{
     mazeWidth = 33,
     objectCount = 30,
     roomCount = 11,
-    roomMaxSize = 6,
+    roomMaxSize = 9,
 }
 
