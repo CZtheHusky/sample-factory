@@ -54,23 +54,23 @@ LASER_LEVEL_MAPPING = collections.OrderedDict([
 ])
 
 LASER_GEN_LEVEL_MAPPING = collections.OrderedDict([
-    ('lasertag_' + str(i), 'lasertag_' + str(i)) for i in range(108)
+    ('lasertag-' + str(i), 'lasertag-' + str(i)) for i in range(108)
 ])
 
 EGL_MAPPING = collections.OrderedDict([
-    ('explore_goal_locations' + str(i), 'explore_goal_locations' + str(i)) for i in range(72)
+    ('explore_goal_locations-' + str(i), 'explore_goal_locations-' + str(i)) for i in range(72)
 ])
 
 EOL_MAPPING = collections.OrderedDict([
-    ('explore_object_locations' + str(i), 'explore_object_locations' + str(i)) for i in range(48)
+    ('explore_object_locations-' + str(i), 'explore_object_locations-' + str(i)) for i in range(48)
 ])
 
 EOR_MAPPING = collections.OrderedDict([
-    ('explore_object_rewards' + str(i), 'explore_object_rewards' + str(i)) for i in range(81)
+    ('explore_object_rewards-' + str(i), 'explore_object_rewards-' + str(i)) for i in range(81)
 ])
 
 EOG_MAPPING = collections.OrderedDict([
-    ('explore_obstructed_goals' + str(i), 'explore_obstructed_goals' + str(i)) for i in range(108)
+    ('explore_obstructed_goals-' + str(i), 'explore_obstructed_goals-' + str(i)) for i in range(108)
 ])
 
 NAVMAZE_RANDOM_LEVEL_MAPPING = collections.OrderedDict([
