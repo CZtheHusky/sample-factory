@@ -19,15 +19,15 @@ local factory = require 'factories.lasertag.procedural_factory'
 
 return factory.createLevelApi{
     episodeLengthSeconds = 240,
-    botCount = 1,
+    botCount = 3,
     color = true,
     mazeGenerationParams = {
         height = 31,
         width = 31,
-        maxRooms = 15,
+        maxRooms = 5,
         roomMinSize = 3,
-        roomMaxSize = 11,
-        roomSpawnCount = 5,
+        roomMaxSize = 17,
+        roomSpawnCount = 10,
     },
     pickupParams = {
         pickupCount = 4,

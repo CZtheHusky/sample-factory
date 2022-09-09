@@ -51,13 +51,18 @@ def replace_str(level, combine: list, new=False):
         return "return factory.createLevelApi{{\n    doorsClosed = {0},\n    episodeLengthSeconds = 120,\n    mazeHeight = {1},\n    mazeWidth = {1},\n    objectCount = {2},\n    roomCount = {3},\n    roomMaxSize = {4},\n}}\n\n".format(
             *combine)
     if level == 'lasertag':
-        assert len(combine) == 6
         if new:
+            assert len(combine) == 8
             combine[4] = round(combine[4] * combine[1], 0)
             combine[4] = int(combine[4])
             if combine[4] % 2 == 0:
                 combine[4] += 1
-        return "return factory.createLevelApi{{\n    episodeLengthSeconds = 240,\n    botCount = {0},\n    color = true,\n    mazeGenerationParams = {{\n        height = {1},\n        width = {1},\n        maxRooms = {2},\n        roomMinSize = {3},\n        roomMaxSize = {4},\n        roomSpawnCount = {5},\n    }},\n    pickupParams = {{\n        pickupCount = 4,\n        weaponCount = 2,\n    }},\n}}\n".format(*combine)
+            combine[7] = int(round(combine[7] * combine[6]))
+            return "return factory.createLevelApi{{\n    episodeLengthSeconds = 240,\n    botCount = {0},\n    color = true,\n    mazeGenerationParams = {{\n        height = {1},\n        width = {1},\n        maxRooms = {2},\n        roomMinSize = {3},\n        roomMaxSize = {4},\n        roomSpawnCount = {5},\n    }},\n    pickupParams = {{\n        pickupCount = {6},\n        weaponCount = {7},\n    }},\n}}\n".format(
+                *combine)
+        else:
+            assert len(combine) == 6
+            return "return factory.createLevelApi{{\n    episodeLengthSeconds = 240,\n    botCount = {0},\n    color = true,\n    mazeGenerationParams = {{\n        height = {1},\n        width = {1},\n        maxRooms = {2},\n        roomMinSize = {3},\n        roomMaxSize = {4},\n        roomSpawnCount = {5},\n    }},\n    pickupParams = {{\n        pickupCount = 4,\n        weaponCount = 2,\n    }},\n}}\n".format(*combine)
 
 
 combinations = {
@@ -73,7 +78,7 @@ combinations1 = {
     'explore_object_locations': [[11, 23, 35, 47], [5, 11, 17, 23], [0.25, 0.5, 0.75]],
     'explore_object_rewards': [[10, 20, 30], [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], [20, 40, 60]],
     'explore_obstructed_goals': [[0.25, 0.5, 0.75], [11, 23, 35], [10, 20, 30], [11, 22], [0.33, 0.66]],
-    'lasertag': [[1, 5, 10], [15, 31, 47], [5, 10, 15], [3], [0.33, 0.66], [5, 10]],
+    'lasertag': [[3, 6], [15, 31, 47], [5, 10, 15], [3], [0.5], [5, 10, 15], [4, 10], [0.5]],
 }
 
 base_path = './base_levels'
