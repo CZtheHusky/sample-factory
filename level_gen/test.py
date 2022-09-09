@@ -91,3 +91,7 @@ for base_file in bases:
         list2print.append(f_name)
     print(file_name + '_new', 'num: ', len(list2print))
     print(list2print)
+
+
+# cp -r ./level_gen/old_gen_levels/* ~/miniconda3/envs/sample-factory/lib/python3.8/site-packages/deepmind_lab/baselab/game_scripts/levels
+# cp -r ./level_gen/new_gen_levels/* ~/miniconda3/envs/sample-factory/lib/python3.8/site-packages/deepmind_lab/baselab/game_scripts/levels
