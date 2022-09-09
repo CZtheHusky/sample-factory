@@ -235,11 +235,11 @@ def dmlab30_level_name_to_level(level_name):
 
 def dmlab_gen_level_name_to_level(level_name):
     name, _ = level_name.split('_')
-    return f'{name}/{level_name}'
+    return f'old_gen_levels/{name}/{level_name}'
 
 def dmlab_new_gen_level_name_to_level(level_name):
     name, _ = level_name.split('_')
-    return f"{name + '_new'}/{level_name}"
+    return f"new_gen_levels/{name + '_new'}/{level_name}"
 
 def dmlab_navmaze_level_name_to_level(level_name):
     return level_name
