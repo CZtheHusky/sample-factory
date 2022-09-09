@@ -63,8 +63,8 @@ father_path = os.path.dirname(base_path)
 bases = os.listdir(base_path)
 for base_file in bases:
     file_name, suffix = base_file.split('.')
-    target_path = os.path.join(father_path, file_name)
-    n_target_path = os.path.join(father_path, file_name + '_new')
+    target_path = os.path.join(father_path, 'old_gen_levels', file_name)
+    n_target_path = os.path.join(father_path, 'new_gen_levels', file_name + '_new')
     os.makedirs(target_path, exist_ok=True)
     os.makedirs(n_target_path, exist_ok=True)
     with open(os.path.join(base_path, base_file), 'r') as f:
