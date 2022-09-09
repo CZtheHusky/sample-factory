@@ -88,6 +88,7 @@ class DmlabGymEnv(gym.Env):
             'height': self.height,
             'gpuDeviceIndex': str(gpu_index),
             'datasetPath': dataset_path,
+            'logLevel': 'WARN',
         }
 
         if extra_cfg is not None:

@@ -4,8 +4,9 @@ from collections import deque
 import numpy as np
 
 from sample_factory.algorithms.utils.algo_utils import EXTRA_EPISODIC_STATS_PROCESSING, EXTRA_PER_POLICY_SUMMARIES
-from sample_factory.envs.dmlab.dmlab30 import dmlab30_level_name_to_level, \
-    DMLAB30_LEVELS_THAT_USE_LEVEL_CACHE, DMLAB30_LEVELS, HUMAN_SCORES, RANDOM_SCORES, LEVEL_MAPPING
+from sample_factory.envs.dmlab.dmlab30 import dmlab30_level_name_to_level, dmlab_gen_level_name_to_level, LASER_GEN_LEVEL_MAPPING,\
+    DMLAB30_LEVELS_THAT_USE_LEVEL_CACHE, DMLAB30_LEVELS, HUMAN_SCORES, RANDOM_SCORES, LEVEL_MAPPING, LASER_LEVELS, LANGUAGE_LEVELS, NAVMAZE_RANDOM_LEVELS, \
+    dmlab_navmaze_level_name_to_level
 from sample_factory.envs.dmlab.dmlab_gym import DmlabGymEnv, dmlab_level_to_level_name
 from sample_factory.envs.dmlab.dmlab_level_cache import dmlab_ensure_global_cache_initialized
 from sample_factory.envs.dmlab.dmlab_model import dmlab_register_models
@@ -33,6 +34,12 @@ DMLAB_ENVS = [
 
     # train a single agent for all 30 DMLab tasks
     DmLabSpec('dmlab_30', [dmlab30_level_name_to_level(l) for l in DMLAB30_LEVELS]),
+    DmLabSpec('dmlab_language', [dmlab30_level_name_to_level(l) for l in LANGUAGE_LEVELS]),
+    DmLabSpec('dmlab_laser', [dmlab30_level_name_to_level(l) for l in LASER_LEVELS]),
+    DmLabSpec('dmlab_laser_gen', [dmlab_gen_level_name_to_level(l) for l in LASER_GEN_LEVEL_MAPPING]),
+    
+    DmLabSpec('dmlab_nav_maze_random', [dmlab_navmaze_level_name_to_level(l) for l in NAVMAZE_RANDOM_LEVELS]),
+
     DmLabSpec('dmlab_level_cache', [dmlab30_level_name_to_level(l) for l in DMLAB30_LEVELS_THAT_USE_LEVEL_CACHE]),
 
     # this is very hard to work with as a benchmark, because FPS fluctuates a lot due to slow resets.
@@ -202,8 +209,8 @@ def dmlab_extra_summaries(policy_id, policy_avg_stats, env_steps, summary_writer
 
         score = np.mean(level_score)
         test_level_name = LEVEL_MAPPING[level]
-        human = HUMAN_SCORES[test_level_name]
-        random = RANDOM_SCORES[test_level_name]
+        human = HUMAN_SCORES.get(test_level_name, 100.)
+        random = RANDOM_SCORES.get(test_level_name, 100.)
 
         human_normalized_score = (score - random) / (human - random) * 100
         capped_human_normalized_score = min(100.0, human_normalized_score)

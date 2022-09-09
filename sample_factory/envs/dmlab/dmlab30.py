@@ -39,8 +39,37 @@ LEVEL_MAPPING = collections.OrderedDict([
     ('explore_object_rewards_many', 'explore_object_rewards_many'),
 ])
 
+LANGUAGE_LEVEL_MAPPING = collections.OrderedDict([
+    ('language_select_described_object', 'language_select_described_object'),
+    ('language_select_located_object', 'language_select_located_object'),
+    ('language_execute_random_task', 'language_execute_random_task'),
+    ('language_answer_quantitative_question', 'language_answer_quantitative_question'),
+])
+
+LASER_LEVEL_MAPPING = collections.OrderedDict([
+    ('lasertag_one_opponent_small', 'lasertag_one_opponent_small'),
+    ('lasertag_three_opponents_small', 'lasertag_three_opponents_small'),
+    ('lasertag_one_opponent_large', 'lasertag_one_opponent_large'),
+    ('lasertag_three_opponents_large', 'lasertag_three_opponents_large'),
+])
+
+LASER_GEN_LEVEL_MAPPING = collections.OrderedDict([
+    ('lasertag_' + str(i), 'lasertag_' + str(i)) for i in range(108)
+])
+
+NAVMAZE_RANDOM_LEVEL_MAPPING = collections.OrderedDict([
+    ('nav_maze_random_goal_01', 'nav_maze_random_goal_01'),
+    ('nav_maze_random_goal_02', 'nav_maze_random_goal_02'),
+    ('nav_maze_random_goal_03', 'nav_maze_random_goal_03'),
+])
+
+LANGUAGE_LEVELS = tuple(LANGUAGE_LEVEL_MAPPING.keys())
+
+LASER_LEVELS = tuple(LASER_LEVEL_MAPPING.keys())
+
 DMLAB30_LEVELS = tuple(LEVEL_MAPPING.keys())
 
+NAVMAZE_RANDOM_LEVELS = tuple(NAVMAZE_RANDOM_LEVEL_MAPPING.keys())
 
 HUMAN_SCORES = {
     'rooms_collect_good_objects_test': 10,
@@ -173,6 +202,24 @@ def dmlab30_num_envs():
     num_envs = len(tuple(LEVEL_MAPPING.keys()))
     return num_envs
 
+def dmlab_navmaze_num_envs():
+    num_envs = len(tuple(LEVEL_MAPPING.keys()))
+    return num_envs
+
+def dmlab_laser_num_envs():
+    num_envs = len(tuple(LEVEL_MAPPING.keys()))
+    return num_envs
+
+def dmlab_language_num_envs():
+    num_envs = len(tuple(LEVEL_MAPPING.keys()))
+    return num_envs
 
 def dmlab30_level_name_to_level(level_name):
     return f'contributed/dmlab30/{level_name}'
+
+def dmlab_gen_level_name_to_level(level_name):
+    name, _ = level_name.split('_')
+    return f'{name}/{level_name}'
+
+def dmlab_navmaze_level_name_to_level(level_name):
+    return level_name
