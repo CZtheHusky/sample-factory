@@ -57,6 +57,22 @@ LASER_GEN_LEVEL_MAPPING = collections.OrderedDict([
     ('lasertag_' + str(i), 'lasertag_' + str(i)) for i in range(108)
 ])
 
+EGL_MAPPING = collections.OrderedDict([
+    ('explore_goal_locations' + str(i), 'explore_goal_locations' + str(i)) for i in range(72)
+])
+
+EOL_MAPPING = collections.OrderedDict([
+    ('explore_object_locations' + str(i), 'explore_object_locations' + str(i)) for i in range(48)
+])
+
+EOR_MAPPING = collections.OrderedDict([
+    ('explore_object_rewards' + str(i), 'explore_object_rewards' + str(i)) for i in range(81)
+])
+
+EOG_MAPPING = collections.OrderedDict([
+    ('explore_obstructed_goals' + str(i), 'explore_obstructed_goals' + str(i)) for i in range(108)
+])
+
 NAVMAZE_RANDOM_LEVEL_MAPPING = collections.OrderedDict([
     ('nav_maze_random_goal_01', 'nav_maze_random_goal_01'),
     ('nav_maze_random_goal_02', 'nav_maze_random_goal_02'),
@@ -220,6 +236,10 @@ def dmlab30_level_name_to_level(level_name):
 def dmlab_gen_level_name_to_level(level_name):
     name, _ = level_name.split('_')
     return f'{name}/{level_name}'
+
+def dmlab_new_gen_level_name_to_level(level_name):
+    name, _ = level_name.split('_')
+    return f"{name + '_new'}/{level_name}"
 
 def dmlab_navmaze_level_name_to_level(level_name):
     return level_name

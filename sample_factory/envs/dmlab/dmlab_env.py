@@ -4,9 +4,10 @@ from collections import deque
 import numpy as np
 
 from sample_factory.algorithms.utils.algo_utils import EXTRA_EPISODIC_STATS_PROCESSING, EXTRA_PER_POLICY_SUMMARIES
-from sample_factory.envs.dmlab.dmlab30 import dmlab30_level_name_to_level, dmlab_gen_level_name_to_level, LASER_GEN_LEVEL_MAPPING,\
-    DMLAB30_LEVELS_THAT_USE_LEVEL_CACHE, DMLAB30_LEVELS, HUMAN_SCORES, RANDOM_SCORES, LEVEL_MAPPING, LASER_LEVELS, LANGUAGE_LEVELS, NAVMAZE_RANDOM_LEVELS, \
-    dmlab_navmaze_level_name_to_level
+# from sample_factory.envs.dmlab.dmlab30 import dmlab30_level_name_to_level, dmlab_gen_level_name_to_level, LASER_GEN_LEVEL_MAPPING,\
+#     DMLAB30_LEVELS_THAT_USE_LEVEL_CACHE, DMLAB30_LEVELS, HUMAN_SCORES, RANDOM_SCORES, LEVEL_MAPPING, LASER_LEVELS, LANGUAGE_LEVELS, NAVMAZE_RANDOM_LEVELS, \
+#     dmlab_navmaze_level_name_to_level
+from sample_factory.envs.dmlab.dmlab30 import *
 from sample_factory.envs.dmlab.dmlab_gym import DmlabGymEnv, dmlab_level_to_level_name
 from sample_factory.envs.dmlab.dmlab_level_cache import dmlab_ensure_global_cache_initialized
 from sample_factory.envs.dmlab.dmlab_model import dmlab_register_models
@@ -36,8 +37,23 @@ DMLAB_ENVS = [
     DmLabSpec('dmlab_30', [dmlab30_level_name_to_level(l) for l in DMLAB30_LEVELS]),
     DmLabSpec('dmlab_language', [dmlab30_level_name_to_level(l) for l in LANGUAGE_LEVELS]),
     DmLabSpec('dmlab_laser', [dmlab30_level_name_to_level(l) for l in LASER_LEVELS]),
+
     DmLabSpec('dmlab_laser_gen', [dmlab_gen_level_name_to_level(l) for l in LASER_GEN_LEVEL_MAPPING]),
-    
+    DmLabSpec('dmlab_laser_gen_new', [dmlab_new_gen_level_name_to_level(l) for l in LASER_GEN_LEVEL_MAPPING]),
+
+    DmLabSpec('dmlab_EGL_gen', [dmlab_gen_level_name_to_level(l) for l in EGL_MAPPING]),
+    DmLabSpec('dmlab_EGL_gen_new', [dmlab_new_gen_level_name_to_level(l) for l in EGL_MAPPING]),
+
+    DmLabSpec('dmlab_EOL_gen', [dmlab_gen_level_name_to_level(l) for l in EOL_MAPPING]),
+    DmLabSpec('dmlab_EOL_gen_new', [dmlab_new_gen_level_name_to_level(l) for l in EOL_MAPPING]),
+
+    DmLabSpec('dmlab_EOR_gen', [dmlab_gen_level_name_to_level(l) for l in EOR_MAPPING]),
+    DmLabSpec('dmlab_EOR_gen_new', [dmlab_new_gen_level_name_to_level(l) for l in EOR_MAPPING]),
+
+    DmLabSpec('dmlab_EOG_gen', [dmlab_gen_level_name_to_level(l) for l in EOG_MAPPING]),
+    DmLabSpec('dmlab_EOG_gen_new', [dmlab_new_gen_level_name_to_level(l) for l in EOG_MAPPING]),
+
+
     DmLabSpec('dmlab_nav_maze_random', [dmlab_navmaze_level_name_to_level(l) for l in NAVMAZE_RANDOM_LEVELS]),
 
     DmLabSpec('dmlab_level_cache', [dmlab30_level_name_to_level(l) for l in DMLAB30_LEVELS_THAT_USE_LEVEL_CACHE]),
