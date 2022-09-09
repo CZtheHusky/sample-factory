@@ -14,10 +14,20 @@ replace_target = {
 def replace_str(level, combine: list, new=False):
     if level == 'explore_goal_locations':
         assert len(combine) == 4
+        if new:
+            combine[3] = round(combine[3] * combine[0], 0)
+            combine[3] = int(combine[3])
+            if combine[3] % 2 == 0:
+                combine[3] += 1
         return "return factory.createLevelApi{{\n    episodeLengthSeconds = 120,\n    mazeHeight = {0},\n    mazeWidth = {0},\n    objectCount = {1},\n    roomCount = {2},\n    roomMaxSize = {3},\n}}\n".format(
             *combine)
     if level == 'explore_object_locations':
         assert len(combine) == 3
+        if new:
+            combine[2] = round(combine[2] * combine[0], 0)
+            combine[2] = int(combine[2])
+            if combine[2] % 2 == 0:
+                combine[2] += 1
         return "return factory.createLevelApi{{\n    episodeLengthSeconds = 120,\n    mazeHeight = {0},\n    mazeWidth = {0},\n    roomCount = {1},\n    roomMaxSize = {2},\n}}\n".format(
             *combine)
     if level == 'explore_object_rewards':
@@ -33,10 +43,20 @@ def replace_str(level, combine: list, new=False):
             *combine)
     if level == 'explore_obstructed_goals':
         assert len(combine) == 5
+        if new:
+            combine[4] = round(combine[4] * combine[1], 0)
+            combine[4] = int(combine[4])
+            if combine[4] % 2 == 0:
+                combine[4] += 1
         return "return factory.createLevelApi{{\n    doorsClosed = {0},\n    episodeLengthSeconds = 120,\n    mazeHeight = {1},\n    mazeWidth = {1},\n    objectCount = {2},\n    roomCount = {3},\n    roomMaxSize = {4},\n}}\n\n".format(
             *combine)
     if level == 'lasertag':
         assert len(combine) == 6
+        if new:
+            combine[4] = round(combine[4] * combine[1], 0)
+            combine[4] = int(combine[4])
+            if combine[4] % 2 == 0:
+                combine[4] += 1
         return "return factory.createLevelApi{{\n    episodeLengthSeconds = 240,\n    botCount = {0},\n    color = true,\n    mazeGenerationParams = {{\n        height = {1},\n        width = {1},\n        maxRooms = {2},\n        roomMinSize = {3},\n        roomMaxSize = {4},\n        roomSpawnCount = {5},\n    }},\n    pickupParams = {{\n        pickupCount = 4,\n        weaponCount = 2,\n    }},\n}}\n".format(*combine)
 
 
@@ -49,11 +69,11 @@ combinations = {
 }
 
 combinations1 = {
-    'explore_goal_locations': [[11, 23, 35], [3, 9, 15, 21], [7, 14, 21], [3, 9]],
-    'explore_object_locations': [[11, 23, 35, 47], [5, 11, 17, 23], [3, 7, 11]],
+    'explore_goal_locations': [[11, 23, 35], [3, 9, 15, 21], [7, 14, 21], [0.33, 0.66]],
+    'explore_object_locations': [[11, 23, 35, 47], [5, 11, 17, 23], [0.25, 0.5, 0.75]],
     'explore_object_rewards': [[10, 20, 30], [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], [20, 40, 60]],
-    'explore_obstructed_goals': [[0.25, 0.5, 0.75], [11, 23, 35], [10, 20, 30], [11, 22], [3, 9]],
-    'lasertag': [[1, 5, 10], [15, 31, 47], [5, 10, 15], [3], [5, 11], [5, 10]],
+    'explore_obstructed_goals': [[0.25, 0.5, 0.75], [11, 23, 35], [10, 20, 30], [11, 22], [0.33, 0.66]],
+    'lasertag': [[1, 5, 10], [15, 31, 47], [5, 10, 15], [3], [0.33, 0.66], [5, 10]],
 }
 
 base_path = './base_levels'
@@ -73,12 +93,12 @@ for base_file in bases:
     combines = list(combines)
     for idx, combine in enumerate(combines):
         with open(os.path.join(target_path, file_name + '-' + str(idx) + '.lua'), 'w') as f:
-            f.write(context.replace(replace_target[file_name], replace_str(file_name, combine)))
+            f.write(context.replace(replace_target[file_name], replace_str(file_name, list(combine))))
     combines = itertools.product(*combinations1[file_name], repeat=1)
     combines = list(combines)
     for idx, combine in enumerate(combines):
         with open(os.path.join(n_target_path, file_name + '-' + str(idx) + '.lua'), 'w') as f:
-            f.write(context.replace(replace_target[file_name], replace_str(file_name, combine, True)))
+            f.write(context.replace(replace_target[file_name], replace_str(file_name, list(combine), True)))
     list2print = []
     for files in os.listdir(target_path):
         f_name, _ = files.split('.')

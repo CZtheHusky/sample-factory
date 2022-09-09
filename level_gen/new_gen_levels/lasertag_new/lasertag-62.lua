@@ -26,7 +26,7 @@ return factory.createLevelApi{
         width = 47,
         maxRooms = 5,
         roomMinSize = 3,
-        roomMaxSize = 11,
+        roomMaxSize = 31,
         roomSpawnCount = 5,
     },
     pickupParams = {
