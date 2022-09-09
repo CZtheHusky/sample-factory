@@ -72,12 +72,12 @@ for base_file in bases:
     combines = itertools.product(*combinations[file_name], repeat=1)
     combines = list(combines)
     for idx, combine in enumerate(combines):
-        with open(os.path.join(target_path, file_name + '_' + str(idx) + '.lua'), 'w') as f:
+        with open(os.path.join(target_path, file_name + '-' + str(idx) + '.lua'), 'w') as f:
             f.write(context.replace(replace_target[file_name], replace_str(file_name, combine)))
     combines = itertools.product(*combinations1[file_name], repeat=1)
     combines = list(combines)
     for idx, combine in enumerate(combines):
-        with open(os.path.join(n_target_path, file_name + '_' + str(idx) + '.lua'), 'w') as f:
+        with open(os.path.join(n_target_path, file_name + '-' + str(idx) + '.lua'), 'w') as f:
             f.write(context.replace(replace_target[file_name], replace_str(file_name, combine, True)))
     list2print = []
     for files in os.listdir(target_path):
