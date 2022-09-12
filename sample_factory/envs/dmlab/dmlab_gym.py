@@ -66,6 +66,7 @@ class DmlabGymEnv(gym.Env):
         self.with_instructions = with_instructions and not benchmark_mode
 
         self.action_repeat = action_repeat
+        log.info(f'action repeat: {action_repeat}')
 
         self.random_state = None
 
@@ -163,7 +164,7 @@ class DmlabGymEnv(gym.Env):
                 self.instructions[i] = string_to_hash_bucket(word, DMLAB_VOCABULARY_SIZE)
 
             env_obs_dict[self.instructions_observation] = self.instructions
-
+        env_obs_dict['raw_inst'] = instr
         return env_obs_dict
 
     def reset(self):

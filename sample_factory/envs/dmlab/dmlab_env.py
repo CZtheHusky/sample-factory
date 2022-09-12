@@ -145,8 +145,9 @@ def make_dmlab_env_impl(spec, cfg, env_config, **kwargs):
     if env_config and 'env_id' in env_config:
         env.seed(env_config['env_id'])
 
-    if 'record_to' in cfg and cfg.record_to is not None:
-        env = RecordingWrapper(env, cfg.record_to, 0)
+    # if 'record_to' in cfg and cfg.record_to is not None:
+    #     print('record_to: ', cfg.record_to)
+    #     env = RecordingWrapper(env, cfg.record_to, 0)
 
     if cfg.pixel_format == 'CHW':
         env = PixelFormatChwWrapper(env)

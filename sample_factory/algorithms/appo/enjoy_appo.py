@@ -46,6 +46,7 @@ def enjoy(cfg, max_num_frames=1e9):
     actor_critic = create_actor_critic(cfg, env.observation_space, env.action_space)
 
     device = torch.device('cpu' if cfg.device == 'cpu' else 'cuda')
+    print('device: ', device)
     actor_critic.model_to_device(device)
 
     policy_id = cfg.policy_index
