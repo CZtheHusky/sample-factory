@@ -19,7 +19,7 @@ class DmlabRewardShapingWrapper(gym.Wrapper):
         obs, rew, done, info = self.env.step(action)
         self.raw_episode_return += rew
         self.episode_length += info.get('num_frames', 1)
-
+        info.update({'raw_step_rew': rew})
         # optimistic asymmetric clipping from IMPALA paper
         squeezed = tanh(rew / 5.0)
         clipped = 0.3 * squeezed if rew < 0.0 else squeezed
