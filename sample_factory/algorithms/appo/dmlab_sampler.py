@@ -1,3 +1,4 @@
+from logging import exception
 import sys
 import time
 from collections import deque
@@ -58,39 +59,57 @@ def enjoy(cfg):
     worker_index = os.environ.get('_worker_index_', None)
     store_path = os.environ.get('_store_path_', None)
     traj_num = os.environ.get('_traj_num_', None)
+    resume_collection = os.environ.get('_resume_', False)
+    worker_index = int(worker_index)
+    traj_num = int(traj_num)
+    resume_collection = True if resume_collection == 'True' else False
     max_traj_num = traj_num
-    # cfg.env_frameskip = 1  # for evaluation
     cfg.num_envs = 1
     save_interval = 100000
-    max_ep_reward = -1e9
-    min_ep_reward = 1e9
-    max_ep_length = -1e9
-    min_ep_length = 1e9
-    save_idx = 0
-    total_transitions = 0
     cur_trans_num = 0
-    total_eps = 0
-    total_ep_reward = 0  
-
-    assert worker_index is not None and store_path is not None and traj_num is not None
-
     def make_env_func(env_config):
         return create_env(cfg.env, cfg=cfg, env_config=env_config)
-
     env = make_env_func(AttrDict({'worker_index': worker_index, 'vector_index': 0}))
     # env.seed(0)
-
     is_multiagent = is_multiagent_env(env)
     if not is_multiagent:
         env = MultiAgentWrapper(env)
-
+    task_name = env.level_name
+    save_path = os.path.join(store_path, task_name)
+    os.makedirs(save_path, exist_ok=True)
+    avg_random_score = None
+    if resume_collection:
+        with open(os.path.join(save_path, '0_0_readme.json'), mode='r') as f:
+            content = json.load(f)
+        total_eps = content.get('Trajectory_num')
+        total_transitions = content.get('Transition_num')
+        total_ep_reward = content.get('Total_episode_return')
+        avg_random_score = content.get('Average_random_return')
+        min_ep_reward = content.get('Min_ep_reward')
+        max_ep_reward = content.get('Max_ep_reward')
+        min_ep_length = content.get('Min_ep_length')
+        max_ep_length = content.get('Max_ep_length')
+        save_idx = content.get('Save_idx', None)
+        log.info('resume collection:')
+        log.info(content)
+        if save_idx is None:
+            save_idx = 1000
+        else:
+            save_idx += 1
+    else:
+        max_ep_reward = -1e9
+        min_ep_reward = 1e9
+        max_ep_length = -1e9
+        min_ep_length = 1e9
+        save_idx = 0
+        total_transitions = 0
+        total_eps = 0
+        total_ep_reward = 0  
+    assert worker_index is not None and store_path is not None and traj_num is not None and save_idx is not None
     if hasattr(env.unwrapped, 'reset_on_init'):
         # reset call ruins the demo recording for VizDoom
         env.unwrapped.reset_on_init = False
     action_mapper = None
-    task_name = env.level_name
-    save_path = os.path.join(store_path, task_name)
-    os.makedirs(save_path, exist_ok=True)
     if hasattr(env, 'action_set'):
         action_mapper = np.array(env.action_set, dtype=np.uint8)
     
@@ -121,17 +140,18 @@ def enjoy(cfg):
     data2save = reset_data()
     pid = os.getpid()
     with torch.no_grad():
-        random_score = 0
-        random_idx = 0
-        while random_idx < 500:
-            action = random.randint(0, len(action_mapper) - 1)
-            obs, rew, done, infos = env.step([action])
-            random_score += infos[0]['raw_step_rew']
-            for agent_i, done_flag in enumerate(done):
-                if done_flag:
-                    random_idx += 1
-        avg_random_score = random_score / 500
-        obs = env.reset()
+        if avg_random_score is None:
+            random_score = 0
+            random_idx = 0
+            while random_idx < 500:
+                action = random.randint(0, len(action_mapper) - 1)
+                obs, rew, done, infos = env.step([action])
+                random_score += infos[0]['raw_step_rew']
+                for agent_i, done_flag in enumerate(done):
+                    if done_flag:
+                        random_idx += 1
+            avg_random_score = random_score / 500
+            obs = env.reset()
         while not max_trajs_reached(total_eps):
             obs_torch = AttrDict(transform_dict_observations(obs))
             for key, x in obs_torch.items():
@@ -173,26 +193,22 @@ def enjoy(cfg):
                     if status:
                         total_eps += 1
                         traj_rews.append(infos[agent_i].get('true_reward', None))
-                        log.info('Episode finished as %d trajs. true_reward: %.3f', total_eps, traj_rews[-1])
+                        cur_trans_num += ep_steps
+                        log.info('pid: %d, Episode finished as %d trajs. true_reward: %.3f, cur trans: %d, save interval: %d', pid, total_eps, traj_rews[-1], cur_trans_num, save_interval)
                         min_ep_reward = min(min_ep_reward, traj_rews[-1])
                         max_ep_reward = max(max_ep_reward, traj_rews[-1])
                         min_ep_length = min(min_ep_length, ep_steps)
                         max_ep_length = max(max_ep_length, ep_steps)
-                        cur_trans_num += ep_steps
+                        
                         if cur_trans_num >= save_interval or total_eps >= max_traj_num:
                             total_transitions += cur_trans_num
                             log.info(f'pid: {pid} saving data')
                             dataset2save = h5py.File(os.path.join(save_path, str(save_idx) + '.hdf5'), 'w')
                             np.save(os.path.join(save_path, 'episode_reward_' + str(save_idx)), traj_rews)
                             total_ep_reward += np.sum(traj_rews)
-                            traj_rews.clear()
-                            save_idx += 1
-                            cur_trans_num = 0
                             npify(data2save)
                             for k in data2save:
                                 dataset2save.create_dataset(k, data=data2save[k], compression='gzip')
-                            del data2save
-                            data2save = reset_data()
                             res = {
                                 'Trajectory_num': int(total_eps),
                                 'Transition_num': int(total_transitions),
@@ -204,10 +220,16 @@ def enjoy(cfg):
                                 'Max_ep_reward': round(max_ep_reward, 2),
                                 'Min_ep_length': int(min_ep_length),
                                 'Max_ep_length': int(max_ep_length),
+                                'Save_idx': int(save_idx),                                
                             }
                             res_json = json.dumps(res)
                             with open(os.path.join(save_path, '0_0_readme.json'), 'w') as file:
                                 file.write(res_json)
+                            cur_trans_num = 0
+                            traj_rews.clear()
+                            save_idx += 1
+                            del data2save
+                            data2save = reset_data()
                     ep_steps = 0
                     obsBuffer.clear()
                     actionsBuffer.clear()

@@ -30,6 +30,7 @@ def add_dmlab_env_args(env, parser):
     p.add_argument('--dmlab_extended_action_set', default=False, type=str2bool, help='Use larger action set from newer papers (e.g. PopART and R2D2)')
     p.add_argument('--dmlab_use_level_cache', default=True, type=str2bool, help='Whether to use the local level cache (highly recommended)')
     p.add_argument('--dmlab_level_cache_path', default=join(os.getcwd(), '.dmlab_cache'), type=str, help='Location to store the cached levels (or path to pre-generated cache)')
+    p.add_argument('--dmlab_raw_out', type=str2bool, default=False, help='add raw instruction in observations')
     p.add_argument(
         '--dmlab_one_task_per_worker', default=False, type=str2bool,
         help='By default SampleFactory will run several tasks per worker. E.g. if num_envs_per_worker=30 then each and every worker'

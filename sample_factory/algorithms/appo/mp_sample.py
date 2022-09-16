@@ -11,6 +11,7 @@ parser.add_argument('--task_start', type=int, default=0)
 parser.add_argument('--task_end', type=int, default=108)
 parser.add_argument('--gpus', nargs='+', type=int, default=[-1])
 parser.add_argument('--collect_target', type=int, default=10000)
+parser.add_argument('--resume', action='store_true', default=False)
 
 def main(args):
     env_name = args.env
@@ -30,9 +31,10 @@ def main(args):
         os_env = os.environ.copy()
         gpu_id = gpu_list[i % len(gpu_list)]
         os_env['CUDA_VISIBLE_DEVICES'] = str(gpu_id)
-        os_env['_worker_index_']  = i + args.task_start
+        os_env['_worker_index_']  = str(i + args.task_start)
         os_env['_store_path_'] = store_path
-        os_env['_traj_num_'] = collect_target
+        os_env['_traj_num_'] = str(collect_target)
+        os_env['_resume_'] = str(args.resume)
         processes.append(subprocess.Popen(cmd_i, env=os_env))
 
     for p in processes:

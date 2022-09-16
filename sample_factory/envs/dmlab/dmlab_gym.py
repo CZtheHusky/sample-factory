@@ -55,7 +55,7 @@ class DmlabGymEnv(gym.Env):
     def __init__(
             self, task_id, level, action_repeat, res_w, res_h, benchmark_mode, renderer, dataset_path,
             with_instructions, extended_action_set, use_level_cache, level_cache_path,
-            gpu_index, extra_cfg=None,
+            gpu_index, extra_cfg=None, raw_out=False,
     ):
         self.width = res_w
         self.height = res_h
@@ -79,7 +79,7 @@ class DmlabGymEnv(gym.Env):
         self.curr_cache = dmlab_level_cache.DMLAB_GLOBAL_LEVEL_CACHE[self.curr_policy_idx]
 
         self.instructions = np.zeros([DMLAB_MAX_INSTRUCTION_LEN], dtype=np.int32)
-
+        self.raw_out = raw_out
         observation_format = [self.main_observation]
         if self.with_instructions:
             observation_format += [self.instructions_observation]
@@ -164,7 +164,8 @@ class DmlabGymEnv(gym.Env):
                 self.instructions[i] = string_to_hash_bucket(word, DMLAB_VOCABULARY_SIZE)
 
             env_obs_dict[self.instructions_observation] = self.instructions
-        env_obs_dict['raw_inst'] = instr
+        if self.raw_out:
+            env_obs_dict['raw_inst'] = instr
         return env_obs_dict
 
     def reset(self):

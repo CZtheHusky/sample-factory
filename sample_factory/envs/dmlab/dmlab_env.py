@@ -139,10 +139,11 @@ def make_dmlab_env_impl(spec, cfg, env_config, **kwargs):
         task_id, level, skip_frames, cfg.res_w, cfg.res_h, cfg.dmlab_throughput_benchmark, cfg.dmlab_renderer,
         get_dataset_path(cfg), cfg.dmlab_with_instructions, cfg.dmlab_extended_action_set,
         cfg.dmlab_use_level_cache, cfg.dmlab_level_cache_path,
-        gpu_idx, spec.extra_cfg,
+        gpu_idx, spec.extra_cfg, raw_out=cfg.dmlab_raw_out,
     )
 
     if env_config and 'env_id' in env_config:
+        log.info('env seed: ', env_config['env_id'])
         env.seed(env_config['env_id'])
 
     # if 'record_to' in cfg and cfg.record_to is not None:
