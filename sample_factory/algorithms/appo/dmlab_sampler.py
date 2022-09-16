@@ -55,7 +55,10 @@ def npify(data):
 
 def enjoy(cfg):
     cfg = load_from_checkpoint(cfg)
-    max_traj_num = cfg.traj_num
+    worker_index = os.environ.get('_worker_index_', None)
+    store_path = os.environ.get('_store_path_', None)
+    traj_num = os.environ.get('_traj_num_', None)
+    max_traj_num = traj_num
     # cfg.env_frameskip = 1  # for evaluation
     cfg.num_envs = 1
     save_interval = 100000
@@ -69,10 +72,12 @@ def enjoy(cfg):
     total_eps = 0
     total_ep_reward = 0  
 
+    assert worker_index is not None and store_path is not None and traj_num is not None
+
     def make_env_func(env_config):
         return create_env(cfg.env, cfg=cfg, env_config=env_config)
 
-    env = make_env_func(AttrDict({'worker_index': cfg.worker_index, 'vector_index': 0}))
+    env = make_env_func(AttrDict({'worker_index': worker_index, 'vector_index': 0}))
     # env.seed(0)
 
     is_multiagent = is_multiagent_env(env)
@@ -84,7 +89,7 @@ def enjoy(cfg):
         env.unwrapped.reset_on_init = False
     action_mapper = None
     task_name = env.level_name
-    save_path = os.path.join(cfg.store_path, task_name)
+    save_path = os.path.join(store_path, task_name)
     os.makedirs(save_path, exist_ok=True)
     if hasattr(env, 'action_set'):
         action_mapper = np.array(env.action_set, dtype=np.uint8)

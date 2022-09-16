@@ -45,9 +45,9 @@ def arg_parser(argv=None, evaluation=False):
         help='If not None, store experiment data in the specified subfolder of train_dir. Useful for groups of experiments (e.g. gridsearch)',
     )
     parser.add_argument('-h', '--help', action='store_true', help='Print the help message', required=False)
-    parser.add_argument('--worker_index', type=int, default=0, required=False)
-    parser.add_argument('--store_path', type=str, default='/nfs/dgx03/raid/dmlab_gen_dataset', required=False)
-    parser.add_argument('--traj_num', type=int, default=1, required=False)
+    # parser.add_argument('--worker_index', type=int, default=0, required=False)
+    # parser.add_argument('--store_path', type=str, default='/nfs/dgx03/raid/dmlab_gen_dataset', required=False)
+    # parser.add_argument('--traj_num', type=int, default=1, required=False)
 
     basic_args, _ = parser.parse_known_args(argv)
     algo = basic_args.algo

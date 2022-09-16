@@ -1,3 +1,4 @@
+from hmac import compare_digest
 import subprocess
 import os
 import argparse
@@ -18,15 +19,20 @@ def main(args):
     store_path = os.path.join(args.store_path, env_name)
     os.makedirs(store_path, exist_ok=True)
     gpu_list = args.gpus
-    command = ['python', '-m', 'sample_factory.algorithms.appo.dmlab_sampler', '--no_render', "--algo=APPO", "--dmlab_renderer=software", "--dmlab_one_task_per_worker=True", "--dmlab_level_cache_path=/home/cz/dmlab_cache", "--dmlab_extended_action_set=True", f"--env={env_name}", f"--experiment={expert_path}", f"--store_path={store_path}", f"--traj_num={collect_target}"]
+    # command = ['python', '-m', 'sample_factory.algorithms.appo.dmlab_sampler', '--no_render', "--algo=APPO", "--dmlab_renderer=software", "--dmlab_one_task_per_worker=True", "--dmlab_level_cache_path=/home/cz/dmlab_cache", "--dmlab_extended_action_set=True", f"--env={env_name}", f"--experiment={expert_path}", f"--store_path={store_path}", f"--traj_num={collect_target}"]
+    command = ['python', '-m', 'sample_factory.algorithms.appo.dmlab_sampler', '--no_render', "--algo=APPO", "--dmlab_renderer=software", "--dmlab_one_task_per_worker=True", "--dmlab_level_cache_path=/home/cz/dmlab_cache", "--dmlab_extended_action_set=True", f"--env={env_name}", f"--experiment={expert_path}"]
     n_jobs = args.task_end - args.task_start
     processes = []
     for i in range(n_jobs):
-        cmd_i = command + [f"--worker_index={i + args.task_start}"]
+        # cmd_i = command + [f"--worker_index={i + args.task_start}"]
+        cmd_i = command
         print(cmd_i)
         os_env = os.environ.copy()
         gpu_id = gpu_list[i % len(gpu_list)]
         os_env['CUDA_VISIBLE_DEVICES'] = str(gpu_id)
+        os_env['_worker_index_']  = i + args.task_start
+        os_env['_store_path_'] = store_path
+        os_env['_traj_num_'] = collect_target
         processes.append(subprocess.Popen(cmd_i, env=os_env))
 
     for p in processes:
